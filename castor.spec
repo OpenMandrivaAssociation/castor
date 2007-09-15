@@ -10,7 +10,7 @@
 Summary:        An open source data binding framework for Java
 Name:           castor
 Version:        1.0.5
-Release:        %mkrel 2
+Release:        %mkrel 3
 Epoch:          0
 Group:          Development/Java
 License:        BSD-style
@@ -20,8 +20,6 @@ Patch0:         example-servletapi4.patch
 Patch1:         example-servletapi5.patch
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root
 %if %{gcj_support}
-Requires(post): java-gcj-compat
-Requires(postun): java-gcj-compat
 BuildRequires:  java-gcj-compat-devel
 %else
 Buildarch:      noarch
@@ -55,8 +53,6 @@ BuildRequires:  regexp
 BuildRequires:  xerces-j2
 %if %{gcj_support}
 BuildRequires:    java-gcj-compat-devel >= 0:1.0.31
-Requires(post):   java-gcj-compat >= 0:1.0.31
-Requires(postun): java-gcj-compat >= 0:1.0.31
 %else
 BuildArch:        noarch
 %endif
