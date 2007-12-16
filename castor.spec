@@ -10,7 +10,7 @@
 Summary:        An open source data binding framework for Java
 Name:           castor
 Version:        1.0.5
-Release:        %mkrel 3
+Release:        %mkrel 4
 Epoch:          0
 Group:          Development/Java
 License:        BSD-style
@@ -44,7 +44,7 @@ BuildRequires:  xalan-j2
 BuildRequires:  jakarta-commons-logging
 BuildRequires:  jdbc-stdext
 BuildRequires:  jndi
-BuildRequires:  jpackage-utils >= 0:1.5.16
+BuildRequires:  java-rpmbuild >= 0:1.5.16
 BuildRequires:  jta
 BuildRequires:  ldapjdk
 BuildRequires:  log4j
