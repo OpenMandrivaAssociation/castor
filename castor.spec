@@ -18,13 +18,11 @@ URL:            http://www.castor.org/
 Source0:        http://dist.codehaus.org/castor/%{version}/castor-%{version}-src.tgz
 Patch0:         example-servletapi4.patch
 Patch1:         example-servletapi5.patch
-BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root
 %if %{gcj_support}
 BuildRequires:  java-gcj-compat-devel
 %else
 Buildarch:      noarch
 %endif
-BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root
 Requires:       adaptx
 Requires:       cglib-nohook
 Requires:       jakarta-commons-logging
