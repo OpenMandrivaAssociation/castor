@@ -13,6 +13,7 @@ Version:        1.0.5
 Release:        %mkrel 5
 Epoch:          0
 Group:          Development/Java
+BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-buildroot
 License:        BSD-style
 URL:            http://www.castor.org/
 Source0:        http://dist.codehaus.org/castor/%{version}/castor-%{version}-src.tgz
