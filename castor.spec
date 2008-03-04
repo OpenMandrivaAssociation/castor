@@ -10,7 +10,7 @@
 Summary:        An open source data binding framework for Java
 Name:           castor
 Version:        1.0.5
-Release:        %mkrel 5
+Release:        %mkrel 6
 Epoch:          0
 Group:          Development/Java
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-buildroot
