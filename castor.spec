@@ -1,96 +1,28 @@
-# FIXME:
-# W: castor class-path-in-manifest /usr/share/java/castor-1.0.5.jar
-# W: castor-xml class-path-in-manifest /usr/share/java/castor-xml-1.0.5.jar
-
-%define gcj_support     1
-# XXX: This requires org.mockebj.*
-%bcond_with             examples
-%bcond_with             tests
-
 Summary:        An open source data binding framework for Java
 Name:           castor
-Version:        1.0.5
-Release:        %mkrel 7
+Version:        1.3.2
+Release:        1
 Epoch:          0
 Group:          Development/Java
-BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-buildroot
-License:        BSD-style
-URL:            http://www.castor.org/
-Source0:        http://dist.codehaus.org/castor/%{version}/castor-%{version}-src.tgz
-Patch0:         example-servletapi4.patch
-Patch1:         example-servletapi5.patch
-%if %{gcj_support}
-BuildRequires:  java-gcj-compat-devel
-%else
-Buildarch:      noarch
-%endif
-Requires:       adaptx
-Requires:       cglib-nohook
-Requires:       jakarta-commons-logging
-Requires:       jdbc-stdext
-Requires:       jndi
-Requires:       jta
-Requires:       ldapjdk
-Requires:       log4j
-Requires:       oro
-Requires:       regexp
-Requires:       xerces-j2
-BuildRequires:  adaptx
-BuildRequires:  ant
-BuildRequires:  ant-trax
-BuildRequires:  cglib-nohook
-BuildRequires:  xalan-j2
-BuildRequires:  jakarta-commons-logging
-BuildRequires:  jdbc-stdext
-BuildRequires:  jndi
-BuildRequires:  java-rpmbuild >= 0:1.5.16
-BuildRequires:  jta
-BuildRequires:  ldapjdk
-BuildRequires:  log4j
-BuildRequires:  oro
-BuildRequires:  regexp
-BuildRequires:  xerces-j2
-%if %{gcj_support}
-BuildRequires:    java-gcj-compat-devel >= 0:1.0.31
-%else
-BuildArch:        noarch
-%endif
+License:        BSD and MPLv1.1 and W3C
+URL:            http://castor.codehaus.org
+Source0:        http://dist.codehaus.org/castor/1.3.2/castor-1.3.2-src.tgz
+Patch0:         disable-modules.patch
+BuildArch:      noarch
+BuildRequires:  maven
+BuildRequires:  codehaus-parent
+BuildRequires:  maven-enforcer-plugin
+Requires:       apache-commons-logging
+Requires:       apache-commons-lang
+Obsoletes:      castor-demo < 0:1.3.2
+Obsoletes:      castor-test < 0:1.3.2
+Obsoletes:      castor-xml < 0:1.3.2
+Obsoletes:      castor-doc < 0:1.3.2
 
 %description
 Castor is an open source data binding framework for Java. It's basically
 the shortest path between Java objects, XML documents and SQL tables.
-Castor provides Java to XML binding, Java to SQL persistence, and then
-some more.
-
-%package demo
-Group:          Development/Java
-Summary:        Demo for %{name}
-Requires:       %{name} = %{epoch}:%{version}-%{release}
-Requires:       servletapi5
-BuildRequires:  servletapi5 
-
-%description demo
-Demonstrations and samples for %{name}.
-
-%if %with tests
-%package test
-Group:          Development/Java
-Summary:        Tests for %{name}
-Requires:       %{name} = %{epoch}:%{version}-%{release}
-Requires:       junit
-BuildRequires:  junit
-
-%description test
-Tests for %{name}.
-%endif
-
-%package xml
-Group:          Development/Java
-Summary:        XML support for %{name}
-Requires:       %{name} = %{epoch}:%{version}-%{release}
-
-%description xml
-XML support for Castor.
+Castor provides Java to XML binding, Java to SQL persistence, and more.
 
 %package javadoc
 Group:          Development/Java
@@ -99,136 +31,29 @@ Summary:        Javadoc for %{name}
 %description javadoc
 Javadoc for %{name}.
 
-%package doc
-Summary:        Documentation for %{name}
-Group:          Development/Java
-
-%description doc
-Documentation for %{name}.
-
 %prep
 %setup -q
-find . -type f -name "*.jar" | %{_bindir}/xargs -t %{__rm}
-find . -type f -name "*.class" | %{_bindir}/xargs -t %{__rm}
-%if 0
-find . -name "*.java" -exec perl -p -i -e 's|assert\(|assertTrue\(|g;' {} \;
-find . -name "*.java" -exec perl -p -i -e 's|_test.name\(\)|_test.getName\(\)|g;' {} \;
-find src/doc -name "*.xml" -exec perl -p -i -e 's|\222|&#x92;|g;' {} \;
-%endif
-%patch0
-%patch1
+find . -name "*.jar" -exec rm -f {} \;
+find . -name "*.class" -exec rm -f {} \;
+%patch0 -p0 -b .sav
+
+sed -i 's/Class-Path: xerces.jar jdbc-se2.0.jar jndi.jar jta1.0.1.jar//' src/etc/MANIFEST.MF
 
 %build
-export CLASSPATH=$(build-classpath adaptx cglib-nohook jakarta-commons-logging jdbc-stdext jndi jta junit ldapjdk log4j oro regexp servletapi5 xerces-j2)
-export OPT_JAR_LIST="adaptx ant/ant-trax xalan-j2 xalan-j2-serializer"
-%{__perl} -pi -e 's/<javac/<javac nowarn="true"/g' src/build.xml
-%{ant} -Dbuild.sysclasspath=only -buildfile src/build.xml jar
-%if %with examples
-%{ant} -buildfile src/build.xml compile.examples
-%endif
-%if %with tests
-%{ant} -buildfile src/build.xml CTFjar
-%endif
-%{ant} -buildfile src/build.xml javadoc
+mvn-rpmbuild -X -Dgpg.skip=true -Dmaven.test.skip=true install javadoc:aggregate
 
 %install
-rm -rf $RPM_BUILD_ROOT
-
 # jar
-install -d -m 755 $RPM_BUILD_ROOT%{_javadir}
-install -m 644 dist/%{name}-%{version}.jar $RPM_BUILD_ROOT%{_javadir}/%{name}-%{version}.jar
-install -m 644 dist/%{name}-%{version}-xml.jar $RPM_BUILD_ROOT%{_javadir}/%{name}-xml-%{version}.jar
-%if %with tests
-install -m 644 dist/CTF-%{version}.jar $RPM_BUILD_ROOT%{_javadir}/%{name}-tests-%{version}.jar
-%endif
-(cd $RPM_BUILD_ROOT%{_javadir} && for jar in *-%{version}.jar; do ln -sf ${jar} `echo $jar| sed  "s|-%{version}||g"`; done)
-%{__mkdir_p} %{buildroot}%{_datadir}/%{name}
-
-%if %with examples
-# examples (demo)
-install -d -m 755 $RPM_BUILD_ROOT%{_datadir}/%{name}/examples
-cp -pr build/examples/* $RPM_BUILD_ROOT%{_datadir}/%{name}/examples
-%endif
+install -d -m 755 %{buildroot}%{_javadir}
+install -m 644 core/target/%{name}-core-%{version}.jar %{buildroot}%{_javadir}/%{name}.jar
 
 # javadoc
-install -d -m 755 $RPM_BUILD_ROOT%{_javadocdir}/%{name}-%{version}
-cp -pr build/doc/javadoc/* $RPM_BUILD_ROOT%{_javadocdir}/%{name}-%{version}
-
-# do this last, since it will delete all build directories
-export CLASSPATH=$(build-classpath adaptx cglib-nohook jakarta-commons-logging jdbc-stdext jndi jta junit ldapjdk log4j oro regexp servletapi5 xerces-j2)
-export OPT_JAR_LIST="adaptx ant/ant-trax xalan-j2 xalan-j2-serializer"
-%{ant} -buildfile src/build.xml doc
-
-# like magic
-%jpackage_script org.exolab.castor.builder.SourceGenerator %{nil} %{nil} xerces-j2:%{name} %{name}
-
-%{__perl} -pi -e 's/\r$//g' src/etc/CHANGELOG \
-                            src/main/resources/LICENSE \
-                            src/main/resources/README \
-                            build/doc/*.{css,dtd,txt} \
-                            build/doc/**/*.htm \
-                            build/doc/ora-mar-2k/*.htm
-
-%if %{gcj_support}
-%{_bindir}/aot-compile-rpm
-%endif
-
-%clean
-rm -rf $RPM_BUILD_ROOT
-
-%if %{gcj_support}
-%post
-%{update_gcjdb}
-
-%postun
-%{clean_gcjdb}
-%endif
-
-%post javadoc
-rm -f %{_javadocdir}/%{name}
-ln -s %{name}-%{version} %{_javadocdir}/%{name}
-
-%postun javadoc
-if [ "$1" = "0" ]; then
-    rm -f %{_javadocdir}/%{name}
-fi
+install -d -m 755 %{buildroot}%{_javadocdir}/%{name}
+cp -pr target/site/apidocs/* %{buildroot}%{_javadocdir}/%{name}
 
 %files
-%defattr(0644,root,root,0755)
-%doc src/etc/CHANGELOG src/main/resources/LICENSE src/main/resources/README
-%attr(0755,root,root) %{_bindir}/%{name}
-%{_javadir}/%{name}-%{version}.jar
 %{_javadir}/%{name}.jar
-%if %{gcj_support}
-%dir %{_libdir}/gcj/%{name}
-%attr(-,root,root) %{_libdir}/gcj/%{name}/*
-%endif
-%dir %{_datadir}/%{name}
-
-%files demo
-%defattr(0644,root,root,0755)
-%if %with examples
-%{_datadir}/%{name}/examples
-%endif
-
-%if %with tests
-%files test
-%defattr(0644,root,root,0755)
-%{_javadir}/%{name}-tests-%{version}.jar
-%{_javadir}/%{name}-tests.jar
-%endif
-
-%files xml
-%defattr(0644,root,root,0755)
-%{_javadir}/%{name}-xml-%{version}.jar
-%{_javadir}/%{name}-xml.jar
 
 %files javadoc
-%defattr(0644,root,root,0755)
-%{_javadocdir}/%{name}-%{version}
-
-%files doc
-%defattr(0644,root,root,0755)
-%doc build/doc/*
-
+%{_javadocdir}/%{name}
 
