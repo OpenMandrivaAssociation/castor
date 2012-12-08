@@ -1,0 +1,11 @@
+--- ./src/build.xml.fixencoding	2012-09-20 18:08:33.875825770 -0300
++++ ./src/build.xml	2012-09-20 18:08:51.050825539 -0300
+@@ -681,7 +681,7 @@
+         <mkdir dir="${build}/doc/javadoc"/>
+         <javadoc sourcepath="${java}" destdir="${build}/doc/javadoc" doctitle="${name} JavaDoc"
+                  windowtitle="${name} JavaDoc" bottom="${copyright}" package="true" author="true"
+-                 version="true" noindex="true" packagenames="${allpackagenames}"
++                 version="true" noindex="true" packagenames="${allpackagenames}" encoding="ISO-8859-1"
+                  classpathref="javadoc.classpath"/>
+     </target>
+ 
