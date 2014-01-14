@@ -53,7 +53,7 @@ This package contains the API documentation for %{name}.
 find . -name "*.jar" -exec rm -f {} \;
 find . -name "*.class" -exec rm -f {} \;
 
-%patch0 -p0 -b.orig
+%patch0
 
 # Disable uneeded modules
 %pom_disable_module anttask
@@ -72,6 +72,12 @@ find . -name "*.class" -exec rm -f {} \;
 
 # Fix dep on cglib
 sed -i 's@cglib-nodep@cglib@g' pom.xml cpa/pom.xml
+
+# Fix dep on mtc
+sed -i 's@edu.umd.cs.mtc@edu.umd.cs@g' pom.xml xml/pom.xml
+
+# Fix dep on ant
+sed -i 's@groupId>ant<@groupId>org.apache.ant<@g' pom.xml xml/pom.xml
 
 %build
 %mvn_build -- -Dgpg.skip=true -Dmaven.test.skip=true
