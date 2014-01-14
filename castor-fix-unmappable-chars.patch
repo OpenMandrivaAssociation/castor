@@ -1,0 +1,31 @@
+--- ddlgen/src/main/java/org/castor/ddlgen/AbstractGenerator.java.orig	2013-08-09 13:12:45.724368108 +0100
++++ ddlgen/src/main/java/org/castor/ddlgen/AbstractGenerator.java	2013-08-09 13:13:28.192362684 +0100
+@@ -52,7 +52,7 @@
+  * The class SchemaObjectFactory who handles the SchemaObject creation must 
+  * be overwritten.
+  * <li/> You must overwrite the TypeMapper if mapping between JDBC types and 
+- * specific DBMS’s types is different among various DBMS.
++ * specific DBMSs types is different among various DBMS.
+  * <p/>The example bellow shows how to create a generator for DB2:
+  * <li/> <b>Generator for DB2</b>
+  * <pre>
+@@ -128,7 +128,7 @@
+  * For example:
+  * <pre>
+  *  Generator generator = GeneratorFactory.
+- *      createDDLGenerator(“mysql”, “ddl.properties”, “mysql.properties”);
++ *      createDDLGenerator(mysql, ddl.properties, mysql.properties);
+  * </pre>
+  *  
+  * And to generate DDL, it should specify the printer and call generateDDL method.
+--- xml/src/main/java/org/exolab/castor/types/DateTimeBase.java.orig	2011-03-29 10:20:42.000000000 +0100
++++ xml/src/main/java/org/exolab/castor/types/DateTimeBase.java	2013-08-09 13:16:50.296293006 +0100
+@@ -42,7 +42,7 @@
+  *
+  * $Id: DateTimeBase.java 8516 2010-01-25 12:14:04Z wguttmn $
+  * Date         Author          Changes
+- * 08/30/2001   Arnaud Blandin  added to Calendar() (patch from Sébastien Stormacq [S.Stormacq@aubay-si.lu])
++ * 08/30/2001   Arnaud Blandin  added to Calendar() (patch from Sebastien Stormacq [S.Stormacq@aubay-si.lu])
+  * 05/29/2001   Arnaud Blandin  Added order methods
+  * 05/22/2001   Arnaud Blandin  Created
+  */
