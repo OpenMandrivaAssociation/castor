@@ -6,7 +6,7 @@ Release:        10.1%{?dist}
 Epoch:          0
 
 License:        BSD and MPLv1.1 and W3C
-URL:            http://castor.codehaus.org
+URL:            https://castor.codehaus.org
 Source0:        http://dist.codehaus.org/castor/%{version}/castor-%{version}-src.tgz
 Patch0:         castor-fix-unmappable-chars.patch
 
